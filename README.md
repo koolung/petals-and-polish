@@ -1,33 +1,91 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Petals & Polish - Modern Next.js Website
+
+A beautiful, mobile-first Next.js website with smooth scrolling animations and responsive design.
+
+## Features
+
+- ✨ **Smooth Scroll**: Native CSS scroll-behavior for optimal performance
+- 📱 **Mobile First**: Fully responsive design optimized for all screen sizes
+- 🎨 **Modern UI**: Beautiful gradients, animations, and hover effects
+- ⚡ **Lightning Fast**: Optimized with Next.js and Tailwind CSS
+- 🔒 **Type Safe**: Built with TypeScript
+- ♿ **Accessible**: WCAG compliant components
+
+## Tech Stack
+
+- **Framework**: Next.js 15+ (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **Linting**: ESLint
 
 ## Getting Started
 
-First, run the development server:
+First, install dependencies:
+
+```bash
+npm install
+```
+
+Then, run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+src/
+├── app/
+│   ├── globals.css       # Global styles with smooth scroll animations
+│   ├── layout.tsx        # Root layout with metadata
+│   └── page.tsx          # Home page with sections
+├── components/
+│   ├── Header.tsx        # Mobile-friendly navigation
+│   ├── FeatureCard.tsx   # Reusable card component
+│   └── Footer.tsx        # Footer component
+└── public/               # Static assets
+```
+
+## Customization
+
+### Adding Sections
+
+Edit `src/app/page.tsx` to add new sections. Each section uses smooth scrolling:
+
+```tsx
+<section id="section-id" className="py-16 sm:py-24">
+  {/* Content */}
+</section>
+```
+
+### Styling
+
+- Tailwind CSS classes for responsive design
+- Custom animations in `globals.css`
+- Dark mode support with `dark:` prefix
+
+### Mobile Optimization
+
+- Responsive breakpoints: `sm`, `md`, `lg`, `xl`
+- Touch-friendly button sizes
+- Flexible grid layouts
+
+## Production Build
+
+```bash
+npm run build
+npm start
+```
 
 ## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Tailwind CSS Docs](https://tailwindcss.com/docs)
+- [React Documentation](https://react.dev)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
 ## Deploy on Vercel
 

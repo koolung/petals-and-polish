@@ -3,8 +3,8 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  --primary: #ec4899;
-  --secondary: #8b5cf6;
+  --primary: #f7c5d8;
+  --secondary: #f7c5d8;
 }
 
 @theme inline {
@@ -80,4 +80,18 @@ body {
 /* Smooth transitions */
 * {
   transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Banner scroll animation */
+@keyframes scroll-left {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-scroll {
+  animation: scroll-left 30s linear infinite;
 }
