@@ -1,0 +1,80 @@
+import { NextRequest, NextResponse } from 'next/server';
+import Stripe from 'stripe';
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '');
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const { cartItems } = body;
+
+    if (!cartItems || cartItems.length === 0) {
+      return NextResponse.json(
+        { error: 'Cart is empty' },
+        { status: 400 }
+      );
+    }
+
+    // Get the origin from headers or use a fallback
+    const origin = request.headers.get('origin') || 'http://localhost:3000';
+
+    // Transform cart items to Stripe line items
+    const lineItems = cartItems.map((item: any) => {
+      // Convert relative image paths to absolute URLs for Stripe
+      const imageUrl = item.image.startsWith('http') 
+        ? item.image 
+        : `${origin}${item.image}`;
+
+      return {
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: `${item.title} - Size ${item.size}`,
+            images: [imageUrl],
+          },
+          unit_amount: Math.round(item.price * 100), // Convert to cents
+        },
+        quantity: item.quantity,
+      };
+    });
+
+    // Calculate tax
+    const subtotal = cartItems.reduce(
+      (sum: number, item: any) => sum + item.price * item.quantity,
+      0
+    );
+    const tax = Math.round(subtotal * 0.08 * 100); // 8% tax in cents
+
+    // Add tax as a line item
+    lineItems.push({
+      price_data: {
+        currency: 'usd',
+        product_data: {
+          name: 'Tax',
+        },
+        unit_amount: tax,
+      },
+      quantity: 1,
+    });
+
+    // Create Stripe checkout session
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: lineItems,
+      mode: 'payment',
+      success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/cancel`,
+    });
+
+    console.log('Stripe session created:', session.id);
+    console.log('Stripe checkout URL:', session.url);
+    return NextResponse.json({ sessionId: session.id, checkoutUrl: session.url });
+  } catch (error: any) {
+    console.error('Stripe error:', error);
+    console.error('Error details:', error.message);
+    return NextResponse.json(
+      { error: error.message || 'Payment processing failed' },
+      { status: 500 }
+    );
+  }
+}

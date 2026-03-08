@@ -1,15 +1,23 @@
 'use client';
 
 import { useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
 import Image from 'next/image';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { useCart } from '@/context/CartContext';
 
 export default function ProductDetailPage() {
   const params = useParams();
+  const router = useRouter();
+  const { addToCart } = useCart();
+  
   const [selectedSize, setSelectedSize] = useState('');
   const [showSizeChart, setShowSizeChart] = useState(false);
+  const [quantity, setQuantity] = useState(1);
+  const [isAdding, setIsAdding] = useState(false);
+  const [addSuccess, setAddSuccess] = useState(false);
 
   // Sample product data - in a real app, fetch based on params.id
   const product = {
@@ -37,6 +45,34 @@ export default function ProductDetailPage() {
   ];
 
   const [mainImage, setMainImage] = useState(product.images[0]);
+
+  const handleAddToCart = () => {
+    if (!selectedSize) {
+      alert('Please select a size');
+      return;
+    }
+
+    setIsAdding(true);
+    
+    // Add item to cart
+    addToCart({
+      id: product.id,
+      title: product.title,
+      price: product.price,
+      image: product.images[0],
+      quantity,
+      size: selectedSize,
+    });
+
+    // Show success message
+    setAddSuccess(true);
+    setIsAdding(false);
+
+    // Reset after 2 seconds and redirect
+    setTimeout(() => {
+      router.push('/cart');
+    }, 1500);
+  };
 
   return (
     <div className="min-h-screen bg-white dark:bg-black">
@@ -140,10 +176,52 @@ export default function ProductDetailPage() {
                 )}
               </div>
 
+              {/* Quantity Selection */}
+              <div className="space-y-4">
+                <h2 className="text-xl font-semibold">Quantity</h2>
+                <div className="flex items-center gap-4">
+                  <button
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    className="px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-xl"
+                  >
+                    −
+                  </button>
+                  <input
+                    type="number"
+                    min="1"
+                    value={quantity}
+                    onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                    className="w-16 text-center border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 text-lg"
+                  />
+                  <button
+                    onClick={() => setQuantity(quantity + 1)}
+                    className="px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-xl"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+
               {/* Add to Cart Button */}
-              <button className="w-full bg-[#f7c5d8] text-black font-bold py-4 text-lg rounded-lg hover:shadow-lg hover:shadow-[#f7c5d8]/50 transition-all transform hover:scale-105">
-                🛒 Add to Cart
-              </button>
+              <div className="space-y-2">
+                <button
+                  onClick={handleAddToCart}
+                  disabled={isAdding}
+                  className={`w-full font-bold py-4 text-lg rounded-lg transition-all transform hover:scale-105 ${
+                    addSuccess
+                      ? 'bg-green-500 text-white'
+                      : 'bg-[#f7c5d8] text-black hover:shadow-lg hover:shadow-[#f7c5d8]/50'
+                  } ${isAdding ? 'opacity-70 cursor-not-allowed' : ''}`}
+                >
+                  {addSuccess ? '✓ Added to Cart!' : isAdding ? 'Adding...' : '🛒 Add to Cart'}
+                </button>
+                <Link
+                  href="/cart"
+                  className="block w-full text-center border-2 border-[#f7c5d8] text-black font-semibold py-3 rounded-lg hover:bg-[#f7c5d8]/10 transition-all"
+                >
+                  View Cart
+                </Link>
+              </div>
             </div>
           </div>
 
@@ -191,9 +269,9 @@ export default function ProductDetailPage() {
                     </p>
                     <p className="text-xl font-bold text-[#f7c5d8]">{prod.price}</p>
                   </div>
-                  <button className="w-full bg-[#f7c5d8] text-black font-semibold py-2 rounded-lg hover:shadow-lg hover:shadow-[#f7c5d8]/50 transition-all">
+                  <Link href={`/product/${prod.id}`} className="w-full bg-[#f7c5d8] text-black font-semibold py-2 rounded-lg hover:shadow-lg hover:shadow-[#f7c5d8]/50 transition-all block text-center">
                     View Details
-                  </button>
+                  </Link>
                 </div>
               ))}
             </div>

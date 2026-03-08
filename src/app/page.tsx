@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import Image from 'next/image';
 import Header from '@/components/Header';
 import FeatureCard from '@/components/FeatureCard';
@@ -116,9 +117,9 @@ export default function Home() {
                         <p className="text-xl font-bold text-[#f7c5d8]">{products[currentSlide].price}</p>
                       </div>
                     </div>
-                    <button className="w-3/5 bg-[#f7c5d8] text-black font-semibold py-2 pb-0 rounded-lg hover:shadow-lg hover:shadow-[#f7c5d8]/50 transition-all">
+                    <Link href={`/product/${products[currentSlide].id}`} className="w-3/5 bg-[#f7c5d8] text-black font-semibold py-2 pb-0 rounded-lg hover:shadow-lg hover:shadow-[#f7c5d8]/50 transition-all flex items-center justify-center">
                       Shop Now
-                    </button>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -179,120 +180,18 @@ export default function Home() {
                   </p>
                   <p className="text-xl font-bold text-[#f7c5d8]">{product.price}</p>
                 </div>
-                <button className="w-full bg-[#f7c5d8] text-black font-semibold py-2 rounded-lg hover:shadow-lg hover:shadow-[#f7c5d8]/50 transition-all">
+                <Link href={`/product/${product.id}`} className="w-full bg-[#f7c5d8] text-black font-semibold py-2 rounded-lg hover:shadow-lg hover:shadow-[#f7c5d8]/50 transition-all block text-center">
                   Shop Now
-                </button>
+                </Link>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section id="features" className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-900/50">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4">Powerful Features</h2>
-            <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-              Built with modern web technologies for the best user experience
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <FeatureCard
-              icon="⚡"
-              title="Lightning Fast"
-              description="Optimized performance with Next.js and Tailwind CSS for incredible load times"
-            />
-            <FeatureCard
-              icon="📱"
-              title="Mobile First"
-              description="Fully responsive design that looks perfect on all devices and screen sizes"
-            />
-            <FeatureCard
-              icon="✨"
-              title="Smooth Animations"
-              description="CSS-based animations and smooth scrolling for a delightful user experience"
-            />
-            <FeatureCard
-              icon="🎨"
-              title="Modern Design"
-              description="Contemporary UI patterns and gradient effects for a polished look"
-            />
-            <FeatureCard
-              icon="🔒"
-              title="Type Safe"
-              description="Built with TypeScript for safer code and better developer experience"
-            />
-            <FeatureCard
-              icon="♿"
-              title="Accessible"
-              description="WCAG compliant components that work for everyone"
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* Showcase Section */}
-      <section id="showcase" className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            <div className="space-y-6 animate-slide-in-left">
-              <h2 className="text-3xl sm:text-4xl font-bold">Smooth Scrolling Experience</h2>
-              <p className="text-gray-600 dark:text-gray-400 text-lg">
-                Navigate seamlessly through the site with our smooth scroll behavior. Every transition is optimized for the best visual feedback.
-              </p>
-              <ul className="space-y-3 text-gray-600 dark:text-gray-400">
-                <li className="flex gap-3">
-                  <span className="text-[#f7c5d8] font-bold">✓</span>
-                  <span>Native CSS scroll-behavior for optimal performance</span>
-                </li>
-                <li className="flex gap-3">
-                  <span className="text-[#f7c5d8] font-bold">✓</span>
-                  <span>Smooth section navigation on all breakpoints</span>
-                </li>
-                <li className="flex gap-3">
-                  <span className="text-[#f7c5d8] font-bold">✓</span>
-                  <span>Touch-friendly interactions for mobile users</span>
-                </li>
-              </ul>
-            </div>
-            <div className="bg-gradient-to-br from-[#f7c5d8]/10 to-[#f7c5d8]/5 border border-[#f7c5d8]/20 rounded-2xl p-12 flex items-center justify-center animate-slide-in-right">
-              <div className="text-center space-y-4">
-                <div className="text-6xl">🎯</div>
-                <p className="font-semibold">Mobile Optimized</p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Perfect viewport settings and responsive components
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Contact Section */}
       <section id="contact" className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-900/50">
-        <div className="max-w-2xl mx-auto text-center space-y-8">
-          <div>
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4">Ready to Build?</h2>
-            <p className="text-gray-600 dark:text-gray-400 text-lg">
-              Start your next project with Petals & Polish as your foundation.
-            </p>
-          </div>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href="https://github.com"
-              className="px-8 py-3 bg-[#f7c5d8] text-black font-semibold rounded-lg hover:shadow-lg hover:shadow-[#f7c5d8]/50 transition-all duration-300 transform hover:scale-105"
-            >
-              View Source Code
-            </a>
-            <a
-              href="https://nextjs.org/docs"
-              className="px-8 py-3 border-2 border-[#f7c5d8] text-black font-semibold rounded-lg hover:border-[#f7c5d8] hover:bg-[#f7c5d8]/10 transition-all duration-300"
-            >
-              Learn Next.js
-            </a>
-          </div>
-        </div>
+
       </section>
 
       <Footer />
