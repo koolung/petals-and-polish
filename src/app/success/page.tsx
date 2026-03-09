@@ -23,11 +23,38 @@ function SuccessContent() {
     if (sessionId) {
       const fetchSession = async () => {
         try {
+          console.log('Fetching session details for:', sessionId);
           const response = await fetch(`/api/checkout/session?session_id=${sessionId}`);
           if (response.ok) {
             const data = await response.json();
+            console.log('Session details retrieved:', data);
             setSessionDetails(data);
+
+            // Send confirmation emails
+            try {
+              console.log('Calling send-confirmation endpoint...');
+              const confirmResponse = await fetch('/api/checkout/send-confirmation', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ sessionId }),
+              });
+              
+              const confirmData = await confirmResponse.json();
+              console.log('Send confirmation response:', confirmResponse.status, confirmData);
+              
+              if (!confirmResponse.ok) {
+                console.error('Failed to send confirmation emails:', confirmData);
+              } else {
+                console.log('✓ Confirmation emails sent successfully to:', data.customer_email);
+              }
+            } catch (emailError) {
+              console.error('Error sending confirmation emails:', emailError);
+              // Don't fail the page if emails don't send
+            }
           } else {
+            console.error('Failed to retrieve session, status:', response.status);
             setError('Failed to retrieve order details');
           }
         } catch (err) {

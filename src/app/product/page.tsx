@@ -1,6 +1,8 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import Image from 'next/image';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
@@ -22,26 +24,41 @@ export default function ProductPage() {
 
           {/* Hero Section */}
           <div className="mb-16 space-y-4">
-            <h1 className="text-5xl sm:text-6xl font-bold">Petals & Polish</h1>
+            <h1 className="text-5xl sm:text-6xl font-bold">Products</h1>
             <p className="text-xl text-gray-600 dark:text-gray-400">Gorgeous Press-On Nails. Express Yourself.</p>
           </div>
 
           {/* Collections Grid */}
           <div className="mb-16">
             <h2 className="text-3xl font-bold mb-8">Our Collections</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               {[
-                { name: 'Classic Elegance', price: '$8.99', desc: 'Timeless designs for everyday wear' },
-                { name: 'Bold & Vibrant', price: '$9.99', desc: 'Eye-catching colors and patterns' },
-                { name: 'Luxury Glam', price: '$12.99', desc: 'Premium finishes with embellishments' },
-              ].map((collection) => (
-                <div key={collection.name} className="p-6 border border-gray-300 dark:border-gray-700 rounded-lg hover:border-[#f7c5d8] hover:shadow-lg dark:hover:shadow-[#f7c5d8]/10 transition-all duration-300">
-                  <h3 className="text-xl font-semibold mb-2">{collection.name}</h3>
-                  <p className="text-gray-600 dark:text-gray-400 mb-4">{collection.desc}</p>
-                  <p className="text-2xl font-bold text-[#f7c5d8] mb-4">{collection.price}</p>
-                  <button className="w-full bg-[#f7c5d8] text-black py-2 font-semibold rounded-lg hover:shadow-lg hover:shadow-[#f7c5d8]/50 transition-all duration-300">
+                { id: 1, name: 'Flower', price: '$45.00', originalPrice: '$75.00', image: '/images/flower.jpeg' },
+                { id: 2, name: 'Green', price: '$45.00', originalPrice: '$75.00', image: '/images/green.jpg' },
+                { id: 3, name: 'Light Blue', price: '$45.00', originalPrice: '$75.00', image: '/images/lightblue.jpeg' },
+                { id: 4, name: 'Light Purple', price: '$45.00', originalPrice: '$75.00', image: '/images/lightpurple.jpeg' },
+                { id: 5, name: 'Pink', price: '$45.00', originalPrice: '$75.00', image: '/images/pink.jpeg' },
+                { id: 6, name: 'Purple', price: '$45.00', originalPrice: '$75.00', image: '/images/purple.jpg' },
+                { id: 7, name: 'Sparkle', price: '$45.00', originalPrice: '$75.00', image: '/images/sparkle.jpeg' },
+                { id: 8, name: 'White', price: '$45.00', originalPrice: '$75.00', image: '/images/white.jpeg' },
+              ].map((product) => (
+                <div key={product.id} className="group cursor-pointer">
+                  <div className="relative overflow-hidden rounded-lg mb-3 bg-gray-100 dark:bg-gray-900 aspect-square">
+                    <Image
+                      src={product.image}
+                      alt={product.name}
+                      fill
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                    />
+                  </div>
+                  <h3 className="font-semibold text-sm sm:text-lg mb-2 group-hover:text-[#f7c5d8] transition-colors">{product.name}</h3>
+                  <div className="flex items-center gap-2 mb-3">
+                    <p className="text-sm text-gray-600 dark:text-gray-400 line-through">{product.originalPrice}</p>
+                    <p className="text-lg sm:text-xl font-bold text-[#f7c5d8]">{product.price}</p>
+                  </div>
+                  <Link href={`/product/${product.id}`} className="w-full bg-[#f7c5d8] text-black text-xs sm:text-sm py-2 font-semibold rounded-lg hover:shadow-lg hover:shadow-[#f7c5d8]/50 transition-all duration-300 block text-center">
                     Shop Now
-                  </button>
+                  </Link>
                 </div>
               ))}
             </div>

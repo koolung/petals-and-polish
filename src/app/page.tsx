@@ -72,7 +72,7 @@ export default function Home() {
           </div>
 
           {/* Mobile Banner */}
-          <div className="md:hidden">
+          <div className="md:hidden relative">
             <Image
               src="/images/banner-mobile.png"
               alt="Banner"
@@ -81,12 +81,17 @@ export default function Home() {
               priority
               className="w-full h-auto"
             />
+            <Link href="/product" className="absolute inset-0 flex items-end justify-center pb-20 border-4 border-[#f7c5d8]">
+              <button className="px-8 py-3 bg-[#f7c5d8] text-black border-4 font-semibold rounded-lg hover:shadow-lg hover:shadow-[#f7c5d8]/50 transition-all duration-300 transform hover:scale-105">
+                Shop Now
+              </button>
+            </Link>
           </div>
         </a>
       </section>
 
       {/* Featured Products Section */}
-      <section className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8">
+      <section className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-900/50">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-bold mb-4">Opening Sales Deal</h2>
@@ -116,11 +121,11 @@ export default function Home() {
                         <p className="text-sm text-black line-through">
                           ${(parseFloat(products[currentSlide].price.replace('$', '')) * 1.2).toFixed(2)}
                         </p>
-                        <p className="text-xl font-bold text-[#f7c5d8]">{products[currentSlide].price}</p>
+                        <p className="text-xl font-bold text-[#ff1493]">{products[currentSlide].price}</p>
                       </div>
                     </div>
                     <div className="w-3/5 h-full ">
-                      <Link href={`/product/${products[currentSlide].id}`} className="h-full bg-[#f7c5d8] text-black font-semibold py-3 text-center rounded-lg hover:shadow-lg hover:shadow-[#f7c5d8]/50 transition-all flex items-center justify-center">
+                      <Link href={`/product/${products[currentSlide].id}`} className="h-full bg-transparent border border-[#ff1493] border-3 text-[#ff1493] font-semibold py-3 text-center rounded-lg hover:shadow-lg hover:shadow-[#f7c5d8]/50 transition-all flex items-center justify-center">
                         Shop Now
                       </Link>
                     </div>

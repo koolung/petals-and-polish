@@ -12,23 +12,91 @@ export default function ProductDetailPage() {
   const params = useParams();
   const router = useRouter();
   const { addToCart } = useCart();
-  
+
+  // Product data based on ID
+  const productsData: { [key: string]: any } = {
+    '1': {
+      id: 1,
+      title: 'Light Blue Press-On Nails',
+      price: 45.00,
+      originalPrice: 75.00,
+      images: ['/images/lightblue.jpeg', '/images/lightblue2.jpeg'],
+      description: 'Stunning light blue press-on nails perfect for a fresh, serene look. These elegant nails feature a beautiful sky blue shade that works for any occasion. Super comfortable, durable, and reusable up to 5 times. Professional salon quality finish.',
+      sizes: ['XS', 'S', 'M', 'L'],
+    },
+    '2': {
+      id: 2,
+      title: 'Light Purple Press-On Nails',
+      price: 45.00,
+      originalPrice: 75.00,
+      images: ['/images/lightpurple.jpeg'],
+      description: 'Delicate light purple press-on nails that bring a soft, romantic vibe to your style. Perfect for those who love subtle elegance with a touch of color. Super comfortable, durable, and reusable up to 5 times. Professional salon quality finish.',
+      sizes: ['XS', 'S', 'M', 'L'],
+    },
+    '3': {
+      id: 3,
+      title: 'Flower Press-On Nails',
+      price: 45.00,
+      originalPrice: 75.00,
+      images: ['/images/flower.jpeg'],
+      description: 'Gorgeous floral-inspired press-on nails that bring nature\'s beauty to your fingertips. These stunning nails feature beautiful flower designs perfect for spring and summer. Super comfortable, durable, and reusable up to 5 times. Professional salon quality finish.',
+      sizes: ['XS', 'S', 'M', 'L'],
+    },
+    '4': {
+      id: 4,
+      title: 'Green Press-On Nails',
+      price: 45.00,
+      originalPrice: 75.00,
+      images: ['/images/green.jpg'],
+      description: 'Vibrant green press-on nails that make a bold fashion statement. Whether you prefer a soft sage or vibrant emerald, these nails add a refreshing pop of color to any look. Super comfortable, durable, and reusable up to 5 times. Professional salon quality finish.',
+      sizes: ['XS', 'S', 'M', 'L'],
+    },
+    '5': {
+      id: 5,
+      title: 'Pink Press-On Nails',
+      price: 45.00,
+      originalPrice: 75.00,
+      images: ['/images/pink.jpeg', '/images/pink2.jpeg'],
+      description: 'Classic gorgeous pink press-on nails that never go out of style. These beautiful pink nails are perfect for every season and occasion, from casual to elegant. Super comfortable, durable, and reusable up to 5 times. Professional salon quality finish.',
+      sizes: ['XS', 'S', 'M', 'L'],
+    },
+    '6': {
+      id: 6,
+      title: 'Purple Press-On Nails',
+      price: 45.00,
+      originalPrice: 75.00,
+      images: ['/images/purple.jpg'],
+      description: 'Stunning deep purple press-on nails that exude sophistication and elegance. Perfect for those who love bold, luxurious colors that command attention. Super comfortable, durable, and reusable up to 5 times. Professional salon quality finish.',
+      sizes: ['XS', 'S', 'M', 'L'],
+    },
+    '7': {
+      id: 7,
+      title: 'Sparkle Press-On Nails',
+      price: 45.00,
+      originalPrice: 75.00,
+      images: ['/images/sparkle.jpeg'],
+      description: 'Dazzling sparkle press-on nails that catch the light beautifully. These glamorous nails are perfect for making a statement at parties, events, or whenever you want to shine. Super comfortable, durable, and reusable up to 5 times. Professional salon quality finish.',
+      sizes: ['XS', 'S', 'M', 'L'],
+    },
+    '8': {
+      id: 8,
+      title: 'White Press-On Nails',
+      price: 45.00,
+      originalPrice: 75.00,
+      images: ['/images/white.jpeg'],
+      description: 'Elegant white press-on nails that bring timeless sophistication to your style. These crisp, clean white nails are versatile and work with any outfit or occasion. Super comfortable, durable, and reusable up to 5 times. Professional salon quality finish.',
+      sizes: ['XS', 'S', 'M', 'L'],
+    },
+  };
+
+  const product = productsData[params.id as string] || productsData['1'];
+
   const [selectedSize, setSelectedSize] = useState('');
   const [showSizeChart, setShowSizeChart] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [isAdding, setIsAdding] = useState(false);
   const [addSuccess, setAddSuccess] = useState(false);
-
-  // Sample product data - in a real app, fetch based on params.id
-  const product = {
-    id: 1,
-    title: 'Light Blue Press-On Nails',
-    price: 9.99,
-    originalPrice: 11.99,
-    images: ['/images/lightblue.jpeg', '/images/lightblue.jpeg', '/images/lightblue.jpeg', '/images/lightblue.jpeg'],
-    description: 'Beautiful light blue press-on nails perfect for everyday wear. Super comfortable, durable, and reusable up to 5 times. Professional salon quality finish.',
-    sizes: ['XS', 'S', 'M', 'L'],
-  };
+  const [mainImage, setMainImage] = useState(product.images[0]);
 
   const toolkit = [
     { icon: '✨', name: 'Sticky Tabs', desc: 'Strong adhesive tabs' },
@@ -38,13 +106,20 @@ export default function ProductDetailPage() {
     { icon: '📄', name: 'Nail File', desc: 'Sizing tool' },
   ];
 
-  const recommendedProducts = [
-    { id: 2, image: '/images/pink.jpeg', title: 'Pink', price: '$10.99' },
-    { id: 3, image: '/images/sparkle.jpeg', title: 'Sparkle', price: '$9.99' },
-    { id: 4, image: '/images/white.jpeg', title: 'White', price: '$12.99' },
-  ];
-
-  const [mainImage, setMainImage] = useState(product.images[0]);
+  // Get recommended products - exclude current product
+  const currentId = parseInt(params.id as string) || 1;
+  const allProductIds = [1, 2, 3, 4, 5, 6, 7, 8];
+  const otherProductIds = allProductIds.filter(id => id !== currentId).slice(0, 3);
+  
+  const recommendedProducts = otherProductIds.map(id => {
+    const prod = productsData[id.toString()];
+    return {
+      id: prod.id,
+      image: prod.images[0],
+      title: prod.title,
+      price: `$${prod.price.toFixed(2)}`,
+    };
+  });
 
   const handleAddToCart = () => {
     if (!selectedSize) {
@@ -93,11 +168,11 @@ export default function ProductDetailPage() {
                   priority
                 />
                 <div className="absolute top-4 left-4 bg-[#f7c5d8] text-[#ff1493] px-3 py-1 rounded-2xl text-sm font-semibold">
-                  Save 20%
+                  Save 40%
                 </div>
               </div>
               <div className="grid grid-cols-4 gap-2">
-                {product.images.map((img, idx) => (
+                {product.images.map((img: string, idx: number) => (
                   <button
                     key={idx}
                     onClick={() => setMainImage(img)}
@@ -142,7 +217,7 @@ export default function ProductDetailPage() {
               <div className="space-y-4">
                 <h2 className="text-xl font-semibold">Select Size</h2>
                 <div className="grid grid-cols-4 gap-3">
-                  {product.sizes.map((size) => (
+                  {product.sizes.map((size: string) => (
                     <button
                       key={size}
                       onClick={() => setSelectedSize(size)}
@@ -257,7 +332,7 @@ export default function ProductDetailPage() {
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                     />
                     <div className="absolute top-2 left-2 bg-[#f7c5d8] text-[#ff1493] px-2 py-1 rounded-2xl text-xs font-semibold">
-                      Save 20%
+                      Save 40%
                     </div>
                   </div>
                   <h3 className="font-semibold text-lg mb-2 group-hover:text-[#f7c5d8] transition-colors">

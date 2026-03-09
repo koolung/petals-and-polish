@@ -9,22 +9,17 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold mb-4">Petals & Polish</h4>
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              A modern Next.js website showcasing smooth scroll and mobile-friendly design.
+              Gorgeous Press-On Nails. Express Yourself.
             </p>
           </div>
           <div>
             <h4 className="font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-              <li><a href="#" className="hover:text-[#f7c5d8] transition-colors">Features</a></li>
-              <li><a href="#" className="hover:text-[#f7c5d8] transition-colors">Showcase</a></li>
+              <li><a href="#" className="hover:text-[#f7c5d8] transition-colors">Products</a></li>
               <li><a href="#" className="hover:text-[#f7c5d8] transition-colors">Contact</a></li>
             </ul>
           </div>
           <div>
-            <h4 className="font-semibold mb-4">Built With</h4>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              Next.js, TypeScript, Tailwind CSS
-            </p>
           </div>
         </div>
         <div className="border-t border-gray-200 dark:border-gray-800 pt-8 text-center text-sm text-gray-600 dark:text-gray-400">

@@ -57,6 +57,18 @@ export async function POST(request: NextRequest) {
       quantity: 1,
     });
 
+    // Add flat shipping fee
+    lineItems.push({
+      price_data: {
+        currency: 'cad',
+        product_data: {
+          name: 'Shipping',
+        },
+        unit_amount: 1500, // $15.00 in cents
+      },
+      quantity: 1,
+    });
+
     // Create Stripe checkout session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],

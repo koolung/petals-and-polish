@@ -79,7 +79,8 @@ export default function CartPage() {
   const total = getCartTotal();
   const subtotal = total;
   const tax = parseFloat((subtotal * 0.14).toFixed(2)); // 14% tax
-  const finalTotal = parseFloat((subtotal + tax).toFixed(2));
+  const shipping = 15.0; // Flat shipping rate
+  const finalTotal = parseFloat((subtotal + tax + shipping).toFixed(2));
 
   return (
     <div className="min-h-screen bg-white dark:bg-black">
@@ -100,7 +101,7 @@ export default function CartPage() {
               {cartItems.map((item) => (
                 <div
                   key={`${item.id}-${item.size}`}
-                  className="flex gap-4 p-4 border border-gray-200 dark:border-gray-800 rounded-lg"
+                  className="flex gap-2 py-4 px-1 border border-gray-200 dark:border-gray-800 rounded-lg"
                 >
                   {/* Product Image */}
                   <div className="flex-shrink-0 w-24 h-24 overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-900">
@@ -126,7 +127,7 @@ export default function CartPage() {
                       </p>
                     </div>
 
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between gap-1">
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() =>
@@ -195,7 +196,7 @@ export default function CartPage() {
                   </div>
                   <div className="flex justify-between text-gray-600 dark:text-gray-400">
                     <span>Shipping</span>
-                    <span className="text-green-600 font-semibold">Free</span>
+                    <span className=" ">$15.00</span>
                   </div>
                 </div>
 

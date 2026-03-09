@@ -21,7 +21,7 @@ export default function Header() {
       {/* Promotional Banner */}
       <div className="sticky top-0 z-40 bg-black text-white overflow-hidden h-8 flex items-center">
         <div className="animate-scroll whitespace-nowrap text-sm font-semibold">
-          🎉 20% discount on all items storewide! 🎉 &nbsp;&nbsp;&nbsp;&nbsp; 🎉 20% discount on all items storewide! 🎉
+          🎉 40% discount on all items storewide! 🎉 &nbsp;&nbsp;&nbsp;&nbsp; 🎉 40% discount on all items storewide! 🎉 &nbsp;&nbsp;&nbsp;&nbsp; 🎉 40% discount on all items storewide! 🎉 &nbsp;&nbsp;&nbsp;&nbsp; 🎉 40% discount on all items storewide! 🎉 &nbsp;&nbsp;&nbsp;&nbsp; 🎉 40% discount on all items storewide! 🎉 &nbsp;&nbsp;&nbsp;&nbsp; 
         </div>
       </div>
 
@@ -50,18 +50,21 @@ export default function Header() {
 
         {/* Desktop menu */}
         <div className="hidden md:flex gap-8 items-center">
-          {['Features', 'Showcase', 'Contact'].map((item) => (
-            <button
-              key={item}
-              onClick={() => scrollToSection(item.toLowerCase())}
-              className="text-sm font-medium hover:text-[#f7c5d8] dark:hover:text-[#f7c5d8] transition-colors"
-            >
-              {item}
-            </button>
-          ))}
+          <Link
+            href="/product"
+            className="text-sm font-medium hover:text-[#ff1493] dark:hover:text-[#ff1493] transition-colors"
+          >
+            Product
+          </Link>
+          <button
+            onClick={() => scrollToSection('contact')}
+            className="text-sm font-medium hover:text-[#ff1493] dark:hover:text-[#ff1493] transition-colors"
+          >
+            Contact
+          </button>
           <Link
             href="/cart"
-            className="relative p-2 hover:text-[#f7c5d8] dark:hover:text-[#f7c5d8] transition-colors"
+            className="relative p-2 hover:text-[#ff1493] dark:hover:text-[#ff1493] transition-colors"
           >
             <svg
               className="w-6 h-6"
@@ -88,17 +91,22 @@ export default function Header() {
         {isOpen && (
           <div className="absolute top-16 left-0 right-0 bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800 md:hidden">
             <div className="flex flex-col">
-              {['Features', 'Showcase', 'Contact'].map((item) => (
-                <button
-                  key={item}
-                  onClick={() => scrollToSection(item.toLowerCase())}
-                  className="px-4 py-3 text-left text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-900 border-b border-gray-200 dark:border-gray-800"
-                >
-                  {item}
-                </button>
-              ))}
+              <Link
+                href="/product"
+                onClick={() => setIsOpen(false)}
+                className="px-4 py-3 text-left text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-900 border-b border-gray-200 dark:border-gray-800"
+              >
+                Product
+              </Link>
+              <button
+                onClick={() => scrollToSection('contact')}
+                className="px-4 py-3 text-left text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-900 border-b border-gray-200 dark:border-gray-800"
+              >
+                Contact
+              </button>
               <Link
                 href="/cart"
+                onClick={() => setIsOpen(false)}
                 className="px-4 py-3 text-left text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-900 border-b border-gray-200 dark:border-gray-800 flex items-center gap-2"
               >
                 🛒 Cart {cartCount > 0 && <span className="bg-[#ff1493] text-white text-xs font-bold px-2 py-0.5 rounded-full">{cartCount}</span>}

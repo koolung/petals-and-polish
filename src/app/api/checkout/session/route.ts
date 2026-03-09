@@ -14,9 +14,16 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    const session = await stripe.checkout.sessions.retrieve(sessionId, {
+      expand: ['customer', 'payment_intent'],
+    });
 
-    return NextResponse.json(session);
+    return NextResponse.json({
+      id: session.id,
+      amount_total: session.amount_total,
+      payment_status: session.payment_status,
+      customer_email: session.customer_email || session.customer_details?.email,
+    });
   } catch (error: any) {
     console.error('Stripe error:', error);
     return NextResponse.json(
