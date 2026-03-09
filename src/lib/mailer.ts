@@ -37,17 +37,40 @@ interface OrderDetails {
 }
 
 export async function sendOrderConfirmationEmail(orderDetails: OrderDetails) {
-  const { orderId, customerEmail, amount, paymentStatus } = orderDetails;
+  const { orderId, customerEmail, amount, paymentStatus, items = [] } = orderDetails;
 
   console.log('=== Preparing to send confirmation emails ===');
   console.log('To customer:', customerEmail);
   console.log('Order ID:', orderId);
+  console.log('Items:', items);
+
+  const itemsHtml = items.length > 0 ? `
+    <h3>Items Ordered</h3>
+    <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+      <tr style="background-color: #f5f5f5;">
+        <th style="padding: 10px; text-align: left; border-bottom: 1px solid #ddd;">Item</th>
+        <th style="padding: 10px; text-align: center; border-bottom: 1px solid #ddd;">Quantity</th>
+        <th style="padding: 10px; text-align: right; border-bottom: 1px solid #ddd;">Price</th>
+      </tr>
+      ${items.map((item: any) => `
+        <tr>
+          <td style="padding: 10px; border-bottom: 1px solid #eee;">
+            <strong>${item.name}</strong>
+            ${item.notes ? `<br/><em style="color: #666; font-size: 0.9em;">Notes: ${item.notes}</em>` : ''}
+          </td>
+          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #eee;">${item.quantity}</td>
+          <td style="padding: 10px; text-align: right; border-bottom: 1px solid #eee;">$${(item.price / 100).toFixed(2)} CAD</td>
+        </tr>
+      `).join('')}
+    </table>
+  ` : '';
 
   const customerEmailContent = `
     <h2>Thank you for your order!</h2>
     <p>Your payment has been confirmed.</p>
     <hr />
-    <h3>Order Details</h3>
+    ${itemsHtml}
+    <h3>Order Summary</h3>
     <ul>
       <li><strong>Order ID:</strong> ${orderId}</li>
       <li><strong>Amount Paid:</strong> $${(amount / 100).toFixed(2)} CAD</li>
@@ -69,7 +92,8 @@ export async function sendOrderConfirmationEmail(orderDetails: OrderDetails) {
     <h2>New Order Received</h2>
     <p>A new order has been placed on Petals & Polish.</p>
     <hr />
-    <h3>Order Details</h3>
+    ${itemsHtml}
+    <h3>Order Summary</h3>
     <ul>
       <li><strong>Order ID:</strong> ${orderId}</li>
       <li><strong>Customer Email:</strong> ${customerEmail}</li>

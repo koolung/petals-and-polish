@@ -30,6 +30,7 @@ export async function POST(request: NextRequest) {
           currency: 'cad',
           product_data: {
             name: `${item.title} - Size ${item.size}`,
+            description: item.notes || undefined,
             images: [imageUrl],
           },
           unit_amount: Math.round(item.price * 100), // Convert to cents

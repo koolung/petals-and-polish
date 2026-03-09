@@ -94,6 +94,7 @@ export default function ProductDetailPage() {
   const [selectedSize, setSelectedSize] = useState('');
   const [showSizeChart, setShowSizeChart] = useState(false);
   const [quantity, setQuantity] = useState(1);
+  const [notes, setNotes] = useState('');
   const [isAdding, setIsAdding] = useState(false);
   const [addSuccess, setAddSuccess] = useState(false);
   const [mainImage, setMainImage] = useState(product.images[0]);
@@ -137,6 +138,7 @@ export default function ProductDetailPage() {
       image: product.images[0],
       quantity,
       size: selectedSize,
+      notes: notes || undefined,
     });
 
     // Show success message
@@ -233,7 +235,7 @@ export default function ProductDetailPage() {
                 </div>
                 <button
                   onClick={() => setShowSizeChart(!showSizeChart)}
-                  className="text-[#f7c5d8] font-semibold hover:underline"
+                  className="text-[#f7c5d8] font-semibold hover:underline border-[#f7c5d8] border-2 rounded-lg px-3 py-1 text-sm"
                 >
                   📏 View Size Chart
                 </button>
@@ -275,6 +277,17 @@ export default function ProductDetailPage() {
                     +
                   </button>
                 </div>
+              </div>
+
+              {/* Notes */}
+              <div className="space-y-4">
+                <h2 className="text-xl font-semibold">Notes</h2>
+                <textarea
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  placeholder="Add any special instructions or notes for your order..."
+                  className="w-full border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 text-lg"
+                />
               </div>
 
               {/* Add to Cart Button */}

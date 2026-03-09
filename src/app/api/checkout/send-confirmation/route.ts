@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
     // Retrieve session from Stripe
     console.log(`[${Date.now() - startTime}ms] Fetching session from Stripe...`);
     const session = await stripe.checkout.sessions.retrieve(sessionId, {
-      expand: ['customer', 'payment_intent'],
+      expand: ['customer', 'payment_intent', 'line_items'],
     });
 
     console.log(`[${Date.now() - startTime}ms] Session retrieved successfully`);
@@ -35,12 +35,23 @@ export async function POST(request: NextRequest) {
     console.log('  - Payment Status:', session.payment_status);
     console.log('  - Amount Total:', session.amount_total);
 
+    // Extract line items (products ordered)
+    const items = session.line_items?.data.map((item: any) => ({
+      name: item.price?.product?.name || 'Product',
+      quantity: item.quantity || 1,
+      price: item.price?.unit_amount || 0,
+      notes: item.price?.product?.description || undefined,
+    })) || [];
+
+    console.log(`[${Date.now() - startTime}ms] Line items:`, items);
+
     // Extract order details
     const orderDetails = {
       orderId: session.id.slice(0, 16),
       customerEmail: session.customer_email || session.customer_details?.email || '',
       amount: session.amount_total || 0,
       paymentStatus: session.payment_status,
+      items,
     };
 
     console.log(`[${Date.now() - startTime}ms] Order details prepared:`, orderDetails);
