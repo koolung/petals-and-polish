@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get the origin from headers or use a fallback
-    const origin = request.headers.get('origin') || 'http://localhost:3000';
+    const origin = request.headers.get('origin') || 'https://petals-and-polish.vercel.app/';
 
     // Transform cart items to Stripe line items
     const lineItems = cartItems.map((item: any) => {
@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
 
       return {
         price_data: {
-          currency: 'usd',
+          currency: 'cad',
           product_data: {
             name: `${item.title} - Size ${item.size}`,
             images: [imageUrl],
@@ -43,12 +43,12 @@ export async function POST(request: NextRequest) {
       (sum: number, item: any) => sum + item.price * item.quantity,
       0
     );
-    const tax = Math.round(subtotal * 0.08 * 100); // 8% tax in cents
+    const tax = Math.round(subtotal * 0.14 * 100); // 14% tax in cents
 
     // Add tax as a line item
     lineItems.push({
       price_data: {
-        currency: 'usd',
+        currency: 'cad',
         product_data: {
           name: 'Tax',
         },

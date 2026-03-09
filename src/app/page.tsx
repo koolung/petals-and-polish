@@ -20,10 +20,12 @@ export default function Home() {
   ];
 
   const handleTouchStart = (e: React.TouchEvent) => {
+    if ((e.target as HTMLElement).closest('a, button')) return;
     setTouchStart(e.targetTouches[0].clientX);
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
+    if ((e.target as HTMLElement).closest('a, button')) return;
     setTouchEnd(e.changedTouches[0].clientX);
     handleSwipe();
   };
@@ -107,8 +109,8 @@ export default function Home() {
                       Save 20%
                     </div>
                   </div>
-                  <div className='flex flex-row'>
-                    <div className="flex-1">
+                  <div className='flex flex-row' onClick={(e) => e.stopPropagation()}>
+                    <div className="w-2/5 px-3">
                       <h3 className="font-semibold text-lg text-center">{products[currentSlide].title}</h3>
                       <div className="flex items-center justify-center gap-2">
                         <p className="text-sm text-black line-through">
@@ -117,9 +119,11 @@ export default function Home() {
                         <p className="text-xl font-bold text-[#f7c5d8]">{products[currentSlide].price}</p>
                       </div>
                     </div>
-                    <Link href={`/product/${products[currentSlide].id}`} className="w-3/5 bg-[#f7c5d8] text-black font-semibold py-2 pb-0 rounded-lg hover:shadow-lg hover:shadow-[#f7c5d8]/50 transition-all flex items-center justify-center">
-                      Shop Now
-                    </Link>
+                    <div className="w-3/5 h-full ">
+                      <Link href={`/product/${products[currentSlide].id}`} className="h-full bg-[#f7c5d8] text-black font-semibold py-3 text-center rounded-lg hover:shadow-lg hover:shadow-[#f7c5d8]/50 transition-all flex items-center justify-center">
+                        Shop Now
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </div>

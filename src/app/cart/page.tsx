@@ -78,7 +78,7 @@ export default function CartPage() {
 
   const total = getCartTotal();
   const subtotal = total;
-  const tax = parseFloat((subtotal * 0.08).toFixed(2)); // 8% tax
+  const tax = parseFloat((subtotal * 0.14).toFixed(2)); // 14% tax
   const finalTotal = parseFloat((subtotal + tax).toFixed(2));
 
   return (
@@ -190,7 +190,7 @@ export default function CartPage() {
                     <span>${subtotal.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-gray-600 dark:text-gray-400">
-                    <span>Tax (8%)</span>
+                    <span>Tax (14%)</span>
                     <span>${tax.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-gray-600 dark:text-gray-400">
