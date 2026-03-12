@@ -6,18 +6,14 @@ import Image from 'next/image';
 import Header from '@/components/Header';
 import FeatureCard from '@/components/FeatureCard';
 import Footer from '@/components/Footer';
+import { PRODUCTS } from '@/lib/products';
 
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
 
-  const products = [
-    { id: 1, image: '/images/lightblue.jpeg', title: 'Light Blue', price: '$9.99' },
-    { id: 2, image: '/images/pink.jpeg', title: 'Pink', price: '$10.99' },
-    { id: 3, image: '/images/sparkle.jpeg', title: 'Sparkle', price: '$9.99' },
-    { id: 4, image: '/images/white.jpeg', title: 'White', price: '$12.99' },
-  ];
+  const products = PRODUCTS;
 
   const handleTouchStart = (e: React.TouchEvent) => {
     if ((e.target as HTMLElement).closest('a, button')) return;
@@ -116,10 +112,10 @@ export default function Home() {
                   </div>
                   <div className='flex flex-row' onClick={(e) => e.stopPropagation()}>
                     <div className="w-2/5 px-3">
-                      <h3 className="font-semibold text-lg text-center">{products[currentSlide].title}</h3>
+                      <h3 className="font-semibold text-lg text-center">{products[currentSlide].name}</h3>
                       <div className="flex items-center justify-center gap-2">
                         <p className="text-sm text-black line-through">
-                          ${(parseFloat(products[currentSlide].price.replace('$', '')) * 1.2).toFixed(2)}
+                          {products[currentSlide].originalPrice}
                         </p>
                         <p className="text-xl font-bold text-[#ff1493]">{products[currentSlide].price}</p>
                       </div>
@@ -173,7 +169,7 @@ export default function Home() {
                 <div className="relative overflow-hidden rounded-lg mb-3 bg-gray-100 dark:bg-gray-900 h-40">
                   <Image
                     src={product.image}
-                    alt={product.title}
+                    alt={product.name}
                     width={200}
                     height={200}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
@@ -182,10 +178,10 @@ export default function Home() {
                     Save 20%
                   </div>
                 </div>
-                <h3 className="font-semibold text-lg mb-2 group-hover:text-[#f7c5d8] transition-colors">{product.title}</h3>
+                <h3 className="font-semibold text-lg mb-2 group-hover:text-[#f7c5d8] transition-colors">{product.name}</h3>
                 <div className="flex items-center gap-2 mb-3">
                   <p className="text-sm text-black line-through">
-                    ${(parseFloat(product.price.replace('$', '')) * 1.2).toFixed(2)}
+                    {product.originalPrice}
                   </p>
                   <p className="text-xl font-bold text-[#f7c5d8]">{product.price}</p>
                 </div>
@@ -194,6 +190,49 @@ export default function Home() {
                 </Link>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* About Us Section */}
+      <section className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 bg-white dark:bg-black">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-6">About Petals & Polish</h2>
+          </div>
+
+          <div className="space-y-8">
+            <div className="bg-gradient-to-r from-[#f7c5d8]/10 to-[#f7c5d8]/5 border border-[#f7c5d8]/20 rounded-xl p-8">
+              <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+                We're a <span className="font-semibold text-[#f7c5d8]">Nova Scotia-based small business</span> passionate about creating beautiful, high-quality press-on nails. We believe in the power of craftsmanship and the importance of supporting quality over quantity.
+              </p>
+              
+              <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+                In a world dominated by mass production, we stand by our commitment to <span className="font-semibold text-[#f7c5d8]">handcrafted excellence</span>. Every nail set we create is designed with care, attention to detail, and a dedication to uniqueness. We refuse to compromise quality for profit margins or create cookie-cutter products that lack personality.
+              </p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-8">
+                <div className="text-center">
+                  <div className="text-4xl mb-3"></div>
+                  <h3 className="font-semibold text-lg mb-2">Locally Crafted</h3>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm">Made with pride right here in Nova Scotia</p>
+                </div>
+                <div className="text-center">
+                  <div className="text-4xl mb-3"></div>
+                  <h3 className="font-semibold text-lg mb-2">Quality First</h3>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm">Premium materials and expert craftsmanship</p>
+                </div>
+                <div className="text-center">
+                  <div className="text-4xl mb-3"></div>
+                  <h3 className="font-semibold text-lg mb-2">Uniquely Yours</h3>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm">One-of-a-kind designs with real personality</p>
+                </div>
+              </div>
+            </div>
+
+            <p className="text-center text-gray-600 dark:text-gray-400 text-lg leading-relaxed">
+              When you choose Petals & Polish, you're choosing to support a small business that values integrity, creativity, and the artistry behind every product. Thank you for being part of our journey! 💕
+            </p>
           </div>
         </div>
       </section>

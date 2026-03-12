@@ -11,9 +11,25 @@ export default function CartPage() {
   const { cartItems, removeFromCart, updateQuantity, getCartTotal } = useCart();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [shippingAddress, setShippingAddress] = useState({
+    address: '',
+    city: '',
+    province: 'NS',
+    postalCode: '',
+  });
+
+  const canadianProvinces = [
+    'AB', 'BC', 'MB', 'NB', 'NL', 'NS', 'NT', 'NU', 'ON', 'PE', 'QC', 'SK', 'YT'
+  ];
 
   const handleCheckout = async () => {
     try {
+      // Validate shipping address
+      if (!shippingAddress.address.trim() || !shippingAddress.city.trim() || !shippingAddress.postalCode.trim()) {
+        setError('Please fill in all shipping address fields');
+        return;
+      }
+
       setIsLoading(true);
       setError(null);
 
@@ -21,7 +37,7 @@ export default function CartPage() {
       const response = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ cartItems }),
+        body: JSON.stringify({ cartItems, shippingAddress }),
       });
 
       const data = await response.json();
@@ -203,6 +219,76 @@ export default function CartPage() {
                 <div className="flex justify-between items-center text-xl font-bold">
                   <span>Total</span>
                   <span className="text-[#f7c5d8]">${finalTotal.toFixed(2)}</span>
+                </div>
+
+                {/* Shipping Address Section */}
+                <div className="space-y-4 p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-700">
+                  <h3 className="font-semibold text-lg">Shipping Address</h3>
+                  
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
+                      Street Address
+                    </label>
+                    <input
+                      type="text"
+                      value={shippingAddress.address}
+                      onChange={(e) =>
+                        setShippingAddress({ ...shippingAddress, address: e.target.value })
+                      }
+                      placeholder="123 Main Street"
+                      className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-700 text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
+                      City
+                    </label>
+                    <input
+                      type="text"
+                      value={shippingAddress.city}
+                      onChange={(e) =>
+                        setShippingAddress({ ...shippingAddress, city: e.target.value })
+                      }
+                      placeholder="Halifax"
+                      className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-700 text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
+                        Province
+                      </label>
+                      <select
+                        value={shippingAddress.province}
+                        onChange={(e) =>
+                          setShippingAddress({ ...shippingAddress, province: e.target.value })
+                        }
+                        className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-700 text-black dark:text-white"
+                      >
+                        {canadianProvinces.map((prov) => (
+                          <option key={prov} value={prov}>
+                            {prov}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
+                        Postal Code
+                      </label>
+                      <input
+                        type="text"
+                        value={shippingAddress.postalCode}
+                        onChange={(e) =>
+                          setShippingAddress({ ...shippingAddress, postalCode: e.target.value.toUpperCase() })
+                        }
+                        placeholder="A1A 1A1"
+                        className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-700 text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 {error && (

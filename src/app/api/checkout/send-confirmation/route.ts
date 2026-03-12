@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
     // Retrieve session from Stripe
     console.log(`[${Date.now() - startTime}ms] Fetching session from Stripe...`);
     const session = await stripe.checkout.sessions.retrieve(sessionId, {
-      expand: ['customer', 'payment_intent', 'line_items'],
+      expand: ['customer', 'payment_intent', 'line_items.data.price.product'],
     });
 
     console.log(`[${Date.now() - startTime}ms] Session retrieved successfully`);
@@ -36,14 +36,68 @@ export async function POST(request: NextRequest) {
     console.log('  - Amount Total:', session.amount_total);
 
     // Extract line items (products ordered)
-    const items = session.line_items?.data.map((item: any) => ({
-      name: item.price?.product?.name || 'Product',
-      quantity: item.quantity || 1,
-      price: item.price?.unit_amount || 0,
-      notes: item.price?.product?.description || undefined,
-    })) || [];
+    let subtotal = 0;
+    let tax = 0;
+    let shipping = 0;
 
-    console.log(`[${Date.now() - startTime}ms] Line items:`, items);
+    const items = session.line_items?.data
+      .filter((item: any) => {
+        // Track tax and shipping separately
+        const productName = item.price?.product?.name || '';
+        if (productName === 'Tax') {
+          tax = item.price?.unit_amount || 0;
+          return false;
+        }
+        if (productName === 'Shipping') {
+          shipping = item.price?.unit_amount || 0;
+          return false;
+        }
+        return true;
+      })
+      .map((item: any) => {
+        const product = item.price?.product;
+        const itemData: any = {
+          name: product?.name || 'Product',
+          quantity: item.quantity || 1,
+          price: item.price?.unit_amount || 0,
+        };
+
+        // Track subtotal
+        subtotal += (item.price?.unit_amount || 0) * (item.quantity || 1);
+
+        // Include notes from product description
+        if (product?.description) {
+          itemData.notes = product.description;
+        }
+
+        console.log(`[${Date.now() - startTime}ms] Processed item:`, {
+          name: itemData.name,
+          quantity: itemData.quantity,
+          notes: itemData.notes || 'None',
+        });
+
+        return itemData;
+      }) || [];
+
+    console.log(`[${Date.now() - startTime}ms] Line items with notes:`, items);
+    console.log(`[${Date.now() - startTime}ms] Order breakdown:`, {
+      subtotal: `$${(subtotal / 100).toFixed(2)}`,
+      tax: `$${(tax / 100).toFixed(2)}`,
+      shipping: `$${(shipping / 100).toFixed(2)}`,
+      total: `$${((subtotal + tax + shipping) / 100).toFixed(2)}`,
+    });
+
+    // Extract shipping address from metadata
+    let shippingAddress = null;
+    if (session.metadata?.shippingAddress) {
+      try {
+        shippingAddress = JSON.parse(session.metadata.shippingAddress);
+      } catch (e) {
+        console.error('Failed to parse shipping address:', e);
+      }
+    }
+
+    console.log(`[${Date.now() - startTime}ms] Shipping address:`, shippingAddress);
 
     // Extract order details
     const orderDetails = {
@@ -52,6 +106,10 @@ export async function POST(request: NextRequest) {
       amount: session.amount_total || 0,
       paymentStatus: session.payment_status,
       items,
+      subtotal,
+      tax,
+      shipping,
+      shippingAddress,
     };
 
     console.log(`[${Date.now() - startTime}ms] Order details prepared:`, orderDetails);

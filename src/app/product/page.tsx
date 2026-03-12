@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { PRODUCTS } from '@/lib/products';
 
 export default function ProductPage() {
   const router = useRouter();
@@ -32,16 +33,7 @@ export default function ProductPage() {
           <div className="mb-16">
             <h2 className="text-3xl font-bold mb-8">Our Collections</h2>
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-              {[
-                { id: 1, name: 'Flower', price: '$45.00', originalPrice: '$75.00', image: '/images/flower.jpeg' },
-                { id: 2, name: 'Green', price: '$45.00', originalPrice: '$75.00', image: '/images/green.jpg' },
-                { id: 3, name: 'Light Blue', price: '$45.00', originalPrice: '$75.00', image: '/images/lightblue.jpeg' },
-                { id: 4, name: 'Light Purple', price: '$45.00', originalPrice: '$75.00', image: '/images/lightpurple.jpeg' },
-                { id: 5, name: 'Pink', price: '$45.00', originalPrice: '$75.00', image: '/images/pink.jpeg' },
-                { id: 6, name: 'Purple', price: '$45.00', originalPrice: '$75.00', image: '/images/purple.jpg' },
-                { id: 7, name: 'Sparkle', price: '$45.00', originalPrice: '$75.00', image: '/images/sparkle.jpeg' },
-                { id: 8, name: 'White', price: '$45.00', originalPrice: '$75.00', image: '/images/white.jpeg' },
-              ].map((product) => (
+              {PRODUCTS.map((product) => (
                 <div key={product.id} className="group cursor-pointer">
                   <div className="relative overflow-hidden rounded-lg mb-3 bg-gray-100 dark:bg-gray-900 aspect-square">
                     <Image

@@ -6,7 +6,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '');
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { cartItems } = body;
+    const { cartItems, shippingAddress } = body;
 
     if (!cartItems || cartItems.length === 0) {
       return NextResponse.json(
@@ -25,14 +25,20 @@ export async function POST(request: NextRequest) {
         ? item.image 
         : `${origin}${item.image}`;
 
+      const productData: any = {
+        name: `${item.title} - Size ${item.size}`,
+        images: [imageUrl],
+      };
+
+      // Only include description if there are notes
+      if (item.notes && item.notes.trim()) {
+        productData.description = item.notes;
+      }
+
       return {
         price_data: {
           currency: 'cad',
-          product_data: {
-            name: `${item.title} - Size ${item.size}`,
-            description: item.notes || undefined,
-            images: [imageUrl],
-          },
+          product_data: productData,
           unit_amount: Math.round(item.price * 100), // Convert to cents
         },
         quantity: item.quantity,
@@ -77,6 +83,9 @@ export async function POST(request: NextRequest) {
       mode: 'payment',
       success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/cancel`,
+      metadata: {
+        shippingAddress: JSON.stringify(shippingAddress || {}),
+      },
     });
 
     console.log('Stripe session created:', session.id);

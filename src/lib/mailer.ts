@@ -33,16 +33,27 @@ interface OrderDetails {
     name: string;
     quantity: number;
     price: number;
+    notes?: string;
   }>;
+  subtotal?: number;
+  tax?: number;
+  shipping?: number;
+  shippingAddress?: {
+    address: string;
+    city: string;
+    province: string;
+    postalCode: string;
+  };
 }
 
 export async function sendOrderConfirmationEmail(orderDetails: OrderDetails) {
-  const { orderId, customerEmail, amount, paymentStatus, items = [] } = orderDetails;
+  const { orderId, customerEmail, amount, paymentStatus, items = [], subtotal = 0, tax = 0, shipping = 0, shippingAddress } = orderDetails;
 
   console.log('=== Preparing to send confirmation emails ===');
   console.log('To customer:', customerEmail);
   console.log('Order ID:', orderId);
   console.log('Items:', items);
+  console.log('Shipping address:', shippingAddress);
 
   const itemsHtml = items.length > 0 ? `
     <h3>Items Ordered</h3>
@@ -65,17 +76,46 @@ export async function sendOrderConfirmationEmail(orderDetails: OrderDetails) {
     </table>
   ` : '';
 
+  const shippingAddressHtml = shippingAddress ? `
+    <h3>Shipping Address</h3>
+    <p>
+      ${shippingAddress.address}<br/>
+      ${shippingAddress.city}, ${shippingAddress.province} ${shippingAddress.postalCode}<br/>
+      Canada
+    </p>
+  ` : '';
+
   const customerEmailContent = `
     <h2>Thank you for your order!</h2>
     <p>Your payment has been confirmed.</p>
     <hr />
     ${itemsHtml}
     <h3>Order Summary</h3>
+    <table style="width: 100%; border-collapse: collapse;">
+      <tr style="border-bottom: 1px solid #eee;">
+        <td style="padding: 8px; text-align: right; width: 50%;"><strong>Subtotal:</strong></td>
+        <td style="padding: 8px; text-align: right; width: 50%;">$${(subtotal / 100).toFixed(2)} CAD</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #eee;">
+        <td style="padding: 8px; text-align: right;"><strong>Tax (14%):</strong></td>
+        <td style="padding: 8px; text-align: right;">$${(tax / 100).toFixed(2)} CAD</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #eee;">
+        <td style="padding: 8px; text-align: right;"><strong>Shipping:</strong></td>
+        <td style="padding: 8px; text-align: right;">$${(shipping / 100).toFixed(2)} CAD</td>
+      </tr>
+      <tr style="background-color: #f5f5f5;">
+        <td style="padding: 10px; text-align: right;"><strong>Total:</strong></td>
+        <td style="padding: 10px; text-align: right; font-size: 1.2em;"><strong>$${(amount / 100).toFixed(2)} CAD</strong></td>
+      </tr>
+    </table>
+    <hr />
     <ul>
       <li><strong>Order ID:</strong> ${orderId}</li>
-      <li><strong>Amount Paid:</strong> $${(amount / 100).toFixed(2)} CAD</li>
       <li><strong>Payment Status:</strong> ${paymentStatus}</li>
     </ul>
+    <hr />
+    ${shippingAddressHtml}
     <hr />
     <p><strong>What's Next?</strong></p>
     <ul>
@@ -94,12 +134,32 @@ export async function sendOrderConfirmationEmail(orderDetails: OrderDetails) {
     <hr />
     ${itemsHtml}
     <h3>Order Summary</h3>
+    <table style="width: 100%; border-collapse: collapse;">
+      <tr style="border-bottom: 1px solid #eee;">
+        <td style="padding: 8px; text-align: right; width: 50%;"><strong>Subtotal:</strong></td>
+        <td style="padding: 8px; text-align: right; width: 50%;">$${(subtotal / 100).toFixed(2)} CAD</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #eee;">
+        <td style="padding: 8px; text-align: right;"><strong>Tax (14%):</strong></td>
+        <td style="padding: 8px; text-align: right;">$${(tax / 100).toFixed(2)} CAD</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #eee;">
+        <td style="padding: 8px; text-align: right;"><strong>Shipping:</strong></td>
+        <td style="padding: 8px; text-align: right;">$${(shipping / 100).toFixed(2)} CAD</td>
+      </tr>
+      <tr style="background-color: #f5f5f5;">
+        <td style="padding: 10px; text-align: right;"><strong>Total:</strong></td>
+        <td style="padding: 10px; text-align: right; font-size: 1.2em;"><strong>$${(amount / 100).toFixed(2)} CAD</strong></td>
+      </tr>
+    </table>
+    <hr />
     <ul>
       <li><strong>Order ID:</strong> ${orderId}</li>
       <li><strong>Customer Email:</strong> ${customerEmail}</li>
-      <li><strong>Amount:</strong> $${(amount / 100).toFixed(2)} CAD</li>
       <li><strong>Payment Status:</strong> ${paymentStatus}</li>
     </ul>
+    <hr />
+    ${shippingAddressHtml}
     <hr />
     <p>Please process this order and send a shipping confirmation when the items are dispatched.</p>
   `;
