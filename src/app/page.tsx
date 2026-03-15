@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import Header from '@/components/Header';
@@ -10,41 +10,30 @@ import { PRODUCTS } from '@/lib/products';
 
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [touchStart, setTouchStart] = useState(0);
-  const [touchEnd, setTouchEnd] = useState(0);
+  const mobileCarouselRef = useRef<HTMLDivElement>(null);
 
   const products = PRODUCTS;
 
-  const handleTouchStart = (e: React.TouchEvent) => {
-    if ((e.target as HTMLElement).closest('a, button')) return;
-    setTouchStart(e.targetTouches[0].clientX);
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    if ((e.target as HTMLElement).closest('a, button')) return;
-    setTouchEnd(e.changedTouches[0].clientX);
-    handleSwipe();
-  };
-
-  const handleSwipe = () => {
-    const swipeThreshold = 50;
-    const distance = touchStart - touchEnd;
-
-    if (Math.abs(distance) > swipeThreshold) {
-      if (distance > 0) {
-        nextSlide();
-      } else {
-        prevSlide();
-      }
+  // Mobile carousel scroll
+  const scrollToIndex = (index: number) => {
+    if (mobileCarouselRef.current) {
+      const cardWidth = mobileCarouselRef.current.offsetWidth * 0.88;
+      mobileCarouselRef.current.scrollTo({
+        left: cardWidth * index,
+        behavior: 'smooth'
+      });
+      setCurrentSlide(index);
     }
   };
 
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % products.length);
+    const newIndex = currentSlide < products.length - 1 ? currentSlide + 1 : 0;
+    scrollToIndex(newIndex);
   };
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + products.length) % products.length);
+    const newIndex = currentSlide > 0 ? currentSlide - 1 : products.length - 1;
+    scrollToIndex(newIndex);
   };
   return (
     <div className="min-h-screen bg-white dark:bg-black">
@@ -95,13 +84,19 @@ export default function Home() {
 
           {/* Mobile Carousel */}
           <div className="sm:hidden">
-            <div className="relative" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
-              <div className="mb-6">
-                <div key={products[currentSlide].id} className="group cursor-pointer">
+            <div 
+              ref={mobileCarouselRef}
+              className="flex overflow-x-scroll snap-x snap-mandatory scrollbar-hide gap-3 pb-4"
+            >
+              {products.map((product) => (
+                <div
+                  key={product.id}
+                  className="relative flex-shrink-0 w-[85%] group cursor-pointer"
+                >
                   <div className="relative overflow-hidden rounded-lg mb-3 bg-gray-100 dark:bg-gray-900 h-110">
                     <Image
-                      src={products[currentSlide].image}
-                      alt={products[currentSlide].title}
+                      src={product.image}
+                      alt={product.title}
                       width={200}
                       height={500}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
@@ -110,55 +105,55 @@ export default function Home() {
                       Save 20%
                     </div>
                   </div>
-                  <div className='flex flex-row' onClick={(e) => e.stopPropagation()}>
-                    <div className="w-2/5 px-3">
-                      <h3 className="font-semibold text-lg text-center">{products[currentSlide].name}</h3>
+                  <div className='flex flex-row gap-7' onClick={(e) => e.stopPropagation()}>
+                    <div className="w-2/5">
+                      <h3 className="font-semibold text-lg text-center">{product.name}</h3>
                       <div className="flex items-center justify-center gap-2">
                         <p className="text-sm text-black line-through">
-                          {products[currentSlide].originalPrice}
+                          {product.originalPrice}
                         </p>
-                        <p className="text-xl font-bold text-[#ff1493]">{products[currentSlide].price}</p>
+                        <p className="text-xl font-bold text-[#ff1493]">{product.price}</p>
                       </div>
                     </div>
-                    <div className="w-3/5 h-full ">
-                      <Link href={`/product/${products[currentSlide].id}`} className="h-full bg-transparent border border-[#ff1493] border-3 text-[#ff1493] font-semibold py-3 text-center rounded-lg hover:shadow-lg hover:shadow-[#f7c5d8]/50 transition-all flex items-center justify-center">
+                    <div className="w-3/5">
+                      <Link href={`/product/${product.id}`} className="h-full bg-transparent border border-[#ff1493] border-3 text-[#ff1493] font-semibold py-3 text-center rounded-lg hover:shadow-lg hover:shadow-[#f7c5d8]/50 transition-all flex items-center justify-center">
                         Shop Now
                       </Link>
                     </div>
                   </div>
                 </div>
-              </div>
+              ))}
+            </div>
 
-              {/* Carousel Navigation */}
-              <div className="flex items-center justify-between mb-4">
-                <button
-                  onClick={prevSlide}
-                  className="p-2 hover:opacity-80 transition-all"
-                >
-                  <svg className="w-6 h-6 text-[#ff1493]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                  </svg>
-                </button>
-                <div className="flex gap-2">
-                  {products.map((_, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setCurrentSlide(idx)}
-                      className={`w-2 h-2 rounded-full transition-all ${
-                        idx === currentSlide ? 'bg-[#f7c5d8] w-6' : 'bg-gray-300 dark:bg-gray-700'
-                      }`}
-                    />
-                  ))}
-                </div>
-                <button
-                  onClick={nextSlide}
-                  className="p-2 hover:opacity-80 transition-all"
-                >
-                  <svg className="w-6 h-6 text-[#ff1493]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </button>
+            {/* Carousel Navigation */}
+            <div className="flex items-center justify-between mt-4 px-3">
+              <button
+                onClick={prevSlide}
+                className="p-2 hover:opacity-80 transition-all"
+              >
+                <svg className="w-6 h-6 text-[#ff1493]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <div className="flex gap-2">
+                {products.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => scrollToIndex(idx)}
+                    className={`w-2 h-2 rounded-full transition-all ${
+                      idx === currentSlide ? 'bg-[#f7c5d8] w-6' : 'bg-gray-300 dark:bg-gray-700'
+                    }`}
+                  />
+                ))}
               </div>
+              <button
+                onClick={nextSlide}
+                className="p-2 hover:opacity-80 transition-all"
+              >
+                <svg className="w-6 h-6 text-[#ff1493]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
             </div>
           </div>
 

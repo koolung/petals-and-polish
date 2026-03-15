@@ -20,8 +20,24 @@ export default function Header() {
     <>
       {/* Promotional Banner */}
       <div className="sticky top-0 z-40 bg-black text-white overflow-hidden h-8 flex items-center">
-        <div className="animate-scroll whitespace-nowrap text-sm font-semibold">
-          🎉 40% discount on all items storewide! 🎉 &nbsp;&nbsp;&nbsp;&nbsp; 🎉 40% discount on all items storewide! 🎉 &nbsp;&nbsp;&nbsp;&nbsp; 🎉 40% discount on all items storewide! 🎉 &nbsp;&nbsp;&nbsp;&nbsp; 🎉 40% discount on all items storewide! 🎉 &nbsp;&nbsp;&nbsp;&nbsp; 🎉 40% discount on all items storewide! 🎉 &nbsp;&nbsp;&nbsp;&nbsp; 
+        <style>{`
+          @keyframes scrollBanner {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+          }
+          .banner-scroll {
+            display: flex;
+            animation: scrollBanner 20s linear infinite;
+            width: 200%;
+          }
+          .banner-scroll span {
+            flex: 0 0 50%;
+            white-space: nowrap;
+          }
+        `}</style>
+        <div className="banner-scroll text-sm font-semibold">
+          <span>🎉 40% discount on all items storewide! 🎉</span>
+          <span>🎉 40% discount on all items storewide! 🎉</span>
         </div>
       </div>
 
@@ -40,7 +56,8 @@ export default function Header() {
 
         {/* Mobile menu button */}
         <button
-          className="md:hidden flex flex-col gap-1.5 p-2"
+          className="md:hidden flex flex-col gap-1.5 p-2 relative"
+          style={{ zIndex: 51 }}
           onClick={() => setIsOpen(!isOpen)}
         >
           <span className={`h-0.5 w-5 bg-foreground transition-all ${isOpen ? 'rotate-45 translate-y-2' : ''}`} />
@@ -87,33 +104,64 @@ export default function Header() {
           </Link>
         </div>
 
-        {/* Mobile menu */}
+        {/* Mobile menu backdrop and panel */}
         {isOpen && (
-          <div className="absolute top-16 left-0 right-0 bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800 md:hidden">
-            <div className="flex flex-col">
-              <Link
-                href="/product"
-                onClick={() => setIsOpen(false)}
-                className="px-4 py-3 text-left text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-900 border-b border-gray-200 dark:border-gray-800"
-              >
-                Product
-              </Link>
-              <button
-                onClick={() => scrollToSection('contact')}
-                className="px-4 py-3 text-left text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-900 border-b border-gray-200 dark:border-gray-800"
-              >
-                Contact
-              </button>
-              <Link
-                href="/cart"
-                onClick={() => setIsOpen(false)}
-                className="px-4 py-3 text-left text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-900 border-b border-gray-200 dark:border-gray-800 flex items-center gap-2"
-              >
-                🛒 Cart {cartCount > 0 && <span className="bg-[#ff1493] text-white text-xs font-bold px-2 py-0.5 rounded-full">{cartCount}</span>}
-              </Link>
-            </div>
-          </div>
+          <div
+            className="fixed inset-0 bg-black/50 md:hidden"
+            style={{ zIndex: 30 }}
+            onClick={() => setIsOpen(false)}
+          />
         )}
+        
+        <div
+          className={`fixed top-0 right-0 h-screen w-64 bg-[#f7c5d8f7] dark:bg-black border-l border-gray-200 dark:border-gray-800 md:hidden overflow-hidden`}
+          style={{ 
+            zIndex: 40,
+            transform: isOpen ? 'translateX(0)' : 'translateX(100%)',
+            transition: 'transform 400ms cubic-bezier(0.4, 0, 0.2, 1)'
+          }}
+        >
+          <div className="pt-40 pb-6 flex flex-col">
+            <Link
+              href="/product"
+              onClick={() => setIsOpen(false)}
+              className="px-6 py-4 text-left text-3xl font-extrabold uppercase hover:bg-gray-100 dark:hover:bg-gray-900 dark:border-gray-800"
+              style={{
+                opacity: isOpen ? 1 : 0,
+                transform: isOpen ? 'translateY(0)' : 'translateY(20px)',
+                transition: 'opacity 500ms ease-out, transform 500ms cubic-bezier(0.4, 0, 0.2, 1)',
+                transitionDelay: isOpen ? '100ms' : '0ms'
+              }}
+            >
+              Product
+            </Link>
+            <button
+              onClick={() => scrollToSection('contact')}
+              className="px-6 py-4 text-left text-3xl font-extrabold uppercase hover:bg-gray-100 dark:hover:bg-gray-900 dark:border-gray-800"
+              style={{
+                opacity: isOpen ? 1 : 0,
+                transform: isOpen ? 'translateY(0)' : 'translateY(20px)',
+                transition: 'opacity 500ms ease-out, transform 500ms cubic-bezier(0.4, 0, 0.2, 1)',
+                transitionDelay: isOpen ? '200ms' : '0ms'
+              }}
+            >
+              Contact
+            </button>
+            <Link
+              href="/cart"
+              onClick={() => setIsOpen(false)}
+              className="px-6 py-4 text-left text-3xl font-extrabold uppercase hover:bg-gray-100 dark:hover:bg-gray-900 dark:border-gray-800 flex items-center gap-2"
+              style={{
+                opacity: isOpen ? 1 : 0,
+                transform: isOpen ? 'translateY(0)' : 'translateY(20px)',
+                transition: 'opacity 500ms ease-out, transform 500ms cubic-bezier(0.4, 0, 0.2, 1)',
+                transitionDelay: isOpen ? '300ms' : '0ms'
+              }}
+            >
+             Cart {cartCount > 0 && <span className="bg-[#ff1493] text-white text-xs font-bold px-2 py-0.5 rounded-full">{cartCount}</span>}
+            </Link>
+          </div>
+        </div>
       </nav>
     </header>
     </>

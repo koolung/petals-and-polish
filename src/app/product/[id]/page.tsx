@@ -29,7 +29,7 @@ export default function ProductDetailPage() {
       title: 'Light Purple Press-On Nails',
       price: 45.00,
       originalPrice: 75.00,
-      images: ['/images/lightpurple.jpeg'],
+      images: ['/images/lightpurple1.JPEG', '/images/lightpurple2.JPEG'],
       description: 'Delicate light purple press-on nails that bring a soft, romantic vibe to your style. Perfect for those who love subtle elegance with a touch of color. Super comfortable, durable, and reusable up to 5 times. Professional salon quality finish.',
       sizes: ['XS', 'S', 'M', 'L'],
     },
@@ -98,6 +98,7 @@ export default function ProductDetailPage() {
   const [isAdding, setIsAdding] = useState(false);
   const [addSuccess, setAddSuccess] = useState(false);
   const [mainImage, setMainImage] = useState(product.images[0]);
+  const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
 
   const toolkit = [
     { icon: '✨', name: 'Sticky Tabs', desc: 'Strong adhesive tabs' },
@@ -155,7 +156,7 @@ export default function ProductDetailPage() {
     <div className="min-h-screen bg-white dark:bg-black">
       <Header />
 
-      <section className="pt-40 pb-16 sm:pt-48 sm:pb-24 px-4 sm:px-6 lg:px-8">
+      <section className="pt-20 pb-16 sm:pt-48 sm:pb-24 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
             {/* Image Gallery */}
@@ -172,6 +173,15 @@ export default function ProductDetailPage() {
                 <div className="absolute top-4 left-4 bg-[#f7c5d8] text-[#ff1493] px-3 py-1 rounded-2xl text-sm font-semibold">
                   Save 40%
                 </div>
+                {/* Fullscreen Button */}
+                <button
+                  onClick={() => setFullscreenImage(mainImage)}
+                  className="absolute bottom-4 right-4 bg-black/60 hover:bg-black/80 text-white p-2 rounded-lg transition-all"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6v12h12v-4m4-4V6m0 0h-4m4 0l-5 5" />
+                  </svg>
+                </button>
               </div>
               <div className="grid grid-cols-4 gap-2">
                 {product.images.map((img: string, idx: number) => (
@@ -241,14 +251,33 @@ export default function ProductDetailPage() {
                 </button>
 
                 {showSizeChart && (
-                  <div className="bg-gray-100 dark:bg-gray-900 p-4 rounded-lg text-sm text-gray-700 dark:text-gray-300">
-                    <p className="font-semibold mb-2">Size Chart Guide:</p>
-                    <ul className="space-y-1">
-                      <li><strong>XS:</strong> Size 0-3</li>
-                      <li><strong>S:</strong> Size 4-6</li>
-                      <li><strong>M:</strong> Size 7-9</li>
-                      <li><strong>L:</strong> Size 10-12</li>
-                    </ul>
+                  <div
+                    className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50"
+                    onClick={() => setShowSizeChart(false)}
+                  >
+                    <div
+                      className="relative bg-white dark:bg-black rounded-xl overflow-hidden max-w-2xl max-h-screen"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {/* Close Button */}
+                      <button
+                        onClick={() => setShowSizeChart(false)}
+                        className="absolute top-4 right-4 z-10 bg-black dark:bg-white text-white dark:text-black rounded-full w-10 h-10 flex items-center justify-center hover:opacity-80 transition-opacity"
+                      >
+                        ✕
+                      </button>
+
+                      {/* Size Chart Image */}
+                      <div className="relative w-full h-auto">
+                        <Image
+                          src="/images/guide.png"
+                          alt="Size Chart"
+                          width={700}
+                          height={900}
+                          className="w-full h-auto"
+                        />
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>
@@ -366,6 +395,31 @@ export default function ProductDetailPage() {
           </div>
         </div>
       </section>
+
+      {/* Fullscreen Image Modal */}
+      {fullscreenImage && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-95 flex items-center justify-center z-50 p-4"
+          onClick={() => setFullscreenImage(null)}
+        >
+          <button
+            onClick={() => setFullscreenImage(null)}
+            className="absolute top-6 right-6 bg-white/20 hover:bg-white/40 text-white p-2 rounded-lg transition-all"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          <Image
+            src={fullscreenImage}
+            alt="Fullscreen"
+            width={1200}
+            height={1200}
+            className="w-full object-contain"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
 
       <Footer />
     </div>
